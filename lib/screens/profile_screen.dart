@@ -1,49 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi/providers/auth_provider.dart';
+
+import 'package:wisata_candi/providers/favorite_provider.dart';
+
+import 'package:wisata_candi/screens/sign_in_screen.dart';
 import 'package:wisata_candi/widgets/profile_info_item.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  // TODO: 1. Deklarasikan variabel yang dibutuhkan
-  bool isSignedIn = false;
-  String fullName = 'Muhammad Rachmadi';
-  String userName = 'rachmadi';
-  int favoriteCandiCount = 0;
-
-  void signIn() {
-    setState(() {
-      isSignedIn = true;
-    });
-  }
-
-  void signOut() {
-    setState(() {
-      isSignedIn = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final favoriteCount = context.watch<FavoriteProvider>().count;
+
     return Scaffold(
       body: Stack(
         children: [
-          // Latar Belakang Ungu ( Container Belakang )
           Container(
             height: 200,
             width: double.infinity,
             color: Colors.deepPurple,
           ),
-          // Isi Utama Layar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                // TODO: 2. Buat ProfileHeader (Foto Profil & Kamera)
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -66,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ),
-                        if (isSignedIn)
+                        if (auth.isSignedIn)
                           IconButton(
                             onPressed: () {},
                             icon: Icon(
@@ -82,21 +65,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Divider(color: Colors.deepPurple[100]),
                 const SizedBox(height: 4),
 
-                // TODO: 3. Buat ProfileInfo (Info Pengguna)
+                // Baris Pengguna (Menggunakan auth.username sesuai Slide 30)
                 ProfileInfoItem(
                   icon: Icons.lock,
                   label: 'Pengguna',
-                  value: isSignedIn ? userName : '',
+                  value: auth.isSignedIn ? auth.username : '',
                   iconColor: Colors.amber,
                 ),
                 const SizedBox(height: 4),
                 Divider(color: Colors.deepPurple[100]),
                 const SizedBox(height: 4),
+
                 ProfileInfoItem(
                   icon: Icons.person,
                   label: 'Nama',
-                  value: isSignedIn ? fullName : '',
-                  showEditIcon: isSignedIn,
+                  value: auth.isSignedIn ? auth.username : '',
+                  showEditIcon: auth.isSignedIn,
                   onEditPressed: () {
                     debugPrint('Icon edit ditekan');
                   },
@@ -105,26 +89,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 4),
                 Divider(color: Colors.deepPurple[100]),
                 const SizedBox(height: 4),
+
+                // Baris Favorit (Membaca jumlah dari FavoriteProvider)
                 ProfileInfoItem(
                   icon: Icons.favorite,
                   label: 'Favorit',
-                  value: isSignedIn && favoriteCandiCount > 0
-                      ? '$favoriteCandiCount'
+                  value: auth.isSignedIn && favoriteCount > 0
+                      ? '$favoriteCount'
                       : '0',
                   iconColor: Colors.red,
                 ),
                 const SizedBox(height: 4),
                 Divider(color: Colors.deepPurple[100]),
 
-                // TODO: 4. Buat ProfileActions (Tombol Sign In / Sign Out)
                 const SizedBox(height: 20),
-                isSignedIn
+                auth.isSignedIn
                     ? TextButton(
-                        onPressed: signOut,
+                        onPressed: () {
+                          // Sign Out & Hapus Semua Favorit (Latihan Mandiri Slide 30)
+                          context.read<AuthProvider>().signOut();
+                          context.read<FavoriteProvider>().clearAll();
+                        },
                         child: const Text('Sign Out'),
                       )
                     : TextButton(
-                        onPressed: signIn,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignInScreen(),
+                            ),
+                          );
+                        },
                         child: const Text('Sign In'),
                       ),
               ],

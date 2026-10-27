@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wisata_candi/data/candi_data.dart';
+import 'package:wisata_candi/providers/auth_provider.dart';
+import 'package:wisata_candi/providers/favorite_provider.dart';
 import 'package:wisata_candi/screens/detail_screen.dart';
 import 'package:wisata_candi/screens/profile_screen.dart';
-import 'package:wisata_candi/screens/sign_in_screen.dart'; // Ditambahkan untuk Pertemuan 13
-import 'package:wisata_candi/screens/sign_up_screen.dart'; // Import SignUpScreen
+import 'package:wisata_candi/screens/sign_in_screen.dart';
+import 'package:wisata_candi/screens/sign_up_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +28,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wisata Candi',
       debugShowCheckedModeBanner: false,
-      // Pengaturan Tema disesuaikan dengan Slide 17 PPT Pertemuan 13
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           iconTheme: IconThemeData(color: Colors.deepPurple),
@@ -32,14 +42,12 @@ class MyApp extends StatelessWidget {
         ).copyWith(primary: Colors.deepPurple, surface: Colors.deepPurple[50]),
         useMaterial3: true,
       ),
-      // Pilih salah satu layar yang ingin ditampilkan pertama kali:
-      // home: const SignInScreen(), //komentar jika ingin tamppilkan sign up screen
-      home: const SignUpScreen(), //layar yang aktif dibuka sekarang
+      home: const ProfileScreen(),
     );
   }
 }
 
-// Halaman CandiHomePage tetap dipertahankan utuh
+// CandiHomePage tetap dipertahankan
 class CandiHomePage extends StatelessWidget {
   const CandiHomePage({super.key});
 

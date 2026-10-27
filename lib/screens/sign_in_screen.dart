@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi/providers/auth_provider.dart';
+import 'package:wisata_candi/screens/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -9,31 +12,38 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // TODO: 1. Deklarasikan variabel
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String _errorText = '';
-  bool _isSignedIn = false;
   bool _obscurePassword = true;
+
+  void _signIn() {
+    final name = _usernameController.text.trim();
+    if (name.isEmpty) return;
+
+    // Simpan status sign in ke AuthProvider (Slide 24)
+    context.read<AuthProvider>().signIn(name);
+
+    // Tutup halaman sign in dan kembali ke ProfileScreen
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // TODO: 2. Pasang AppBar
       appBar: AppBar(title: const Text('Sign In')),
-      // TODO: 3. Pasang body dengan SingleChildScrollView & Padding (Mencegah Overflow saat Keyboard muncul)
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Form(
               child: Column(
-                // TODO: 4. Atur alignment
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // TODO: 5. TextFormField nama pengguna
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
@@ -42,8 +52,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // TODO: 6. TextFormField kata sandi dengan suffixIcon (Ikon Mata)
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -66,15 +74,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     obscureText: _obscurePassword,
                   ),
                   const SizedBox(height: 20),
-
-                  // TODO: 7. ElevatedButton Sign In
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _signIn,
                     child: const Text('Sign In'),
                   ),
                   const SizedBox(height: 10),
-
-                  // TODO: 8. RichText Sign Up (Tautan ke pendaftaran)
                   RichText(
                     text: TextSpan(
                       text: 'Belum punya akun? ',
@@ -89,7 +93,15 @@ class _SignInScreenState extends State<SignInScreen> {
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const SignUpScreen(),
+                                ),
+                              );
+                            },
                         ),
                       ],
                     ),
