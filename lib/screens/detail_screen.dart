@@ -31,10 +31,13 @@ class DetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              candi.imageAsset,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Hero(
+              tag: candi.imageAsset,
+              child: Image.asset(
+                candi.imageAsset,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
