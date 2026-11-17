@@ -11,7 +11,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: 6. Implementasi routing ke DetailScreen
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
           context,
@@ -42,24 +42,23 @@ class ItemCard extends StatelessWidget {
               ),
             ),
             // TODO: 4. Buat Text sebagai nama candi
-            // Text nama candi
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 candi.name,
-                textAlign: TextAlign.center,   // <-- tambahan
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            // Text jenis candi
+            // TODO: 5. Buat Text sebagai jenis candi
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 candi.type,
-                textAlign: TextAlign.center,   // <-- tambahan
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 12),
               ),
             ),
