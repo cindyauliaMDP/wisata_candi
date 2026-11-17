@@ -17,6 +17,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _errorText = '';
   bool _obscurePassword = true;
 
+  void _signUp() {
+    final nama = _fullnameController.text.trim();
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    if (nama.isEmpty || username.isEmpty || password.isEmpty) {
+      setState(() => _errorText = 'Semua kolom harus diisi.');
+      return;
+    }
+    if (password.length < 8) {
+      setState(() => _errorText = 'Kata sandi minimal 8 karakter.');
+      return;
+    }
+
+    setState(() => _errorText = '');
+    // Pendaftaran berhasil, kembali ke halaman Sign In
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   // 4. Tombol Sign Up
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _signUp,
                     child: const Text('Sign Up'),
                   ),
                   const SizedBox(height: 10),
@@ -97,7 +116,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
+                          recognizer: TapGestureRecognizer()..onTap = () {
+                            Navigator.pop(context);
+                          },
                         ),
                       ],
                     ),

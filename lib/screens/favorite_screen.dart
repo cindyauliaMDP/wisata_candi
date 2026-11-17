@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi/data/candi_data.dart';
+import 'package:wisata_candi/providers/favorite_provider.dart';
+import 'package:wisata_candi/widgets/item_card.dart';
 
-class FavoriteScreen extends StatefulWidget {
+class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
 
   @override
-  State<FavoriteScreen> createState() => _FavoriteScreenState();
-}
-
-class _FavoriteScreenState extends State<FavoriteScreen> {
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    // watch: layar ikut dibangun ulang setiap kali daftar favorit berubah
+    final favoriteNames = context.watch<FavoriteProvider>().favorites;
+    final favoriteCandis = candiList
+        .where((candi) => favoriteNames.contains(candi.name))
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Favorit')),
+      body: favoriteCandis.isEmpty
+          ? const Center(child: Text('Belum ada candi favorit.'))
+          : GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              padding: const EdgeInsets.all(8),
+              itemCount: favoriteCandis.length,
+              itemBuilder: (context, index) {
+                return ItemCard(candi: favoriteCandis[index]);
+              },
+            ),
+    );
   }
 }
